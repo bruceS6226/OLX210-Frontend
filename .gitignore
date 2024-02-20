@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Compiled output
+/dist/
+
+# Logs
+logs
+*.log
+
+# IDE files
+.idea/
+.vscode/
+
+# Dependency lock files
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.prod
+.env.local
+
+# Compiled Angular CLI output
+/dist/
+/tmp/
+/angular-cli/
+
+# Testing files
+/coverage/
+
+# Build artifacts
+/dist/
+
+# Miscellaneous
+*.swp
+.DS_Store
+
+.angular/*

@@ -1,0 +1,48 @@
+<div class="wrapper" style="margin-top: 20px;">
+    <img style="margin-bottom: 20px;" src="../../../assets/img/logoOLX.jpg" class="logoAcceso">
+    <div class="d-md-flex align-items-center">
+        <img class="logo" src="../../../assets/img/login.png" alt="img login">
+        <h2 style="margin-left: 20px; display: inline-block;">CATEGORÍA</h2>
+    </div>
+    <div class="signin mt-3 mt-md-0">
+        <form #categoriaForm="ngForm" (ngSubmit)="ingresarCategoria(categoriaForm)">
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" id="nombre_categoria" name="nombre_categoria" placeholder="Ingrese el nombre de la categoría" class="form-control"
+                    required [(ngModel)]="categoria.nombre_categoria" #nombre_categoriaInput="ngModel">
+                <label for="nombre_categoria" [style.color]="(categoria.nombre_categoria ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                    {{ categoria.nombre_categoria ? 'Nombre de la categoría:' : 'Ingrese el nombre de la categoría' }}
+                </label>
+                <small id="mensajeErrorTexto" class="form-text text-danger"
+                    [style.display]="(nombre_categoriaInput.invalid && nombre_categoriaInput.touched) ? 'block' : 'none'">
+                    Ingresar caracteres.
+                </small>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" id="descripcion_categoria" name="descripcion_categoria" placeholder="Ingrese la descripción de la categoría" class="form-control"
+                    required [(ngModel)]="categoria.descripcion_categoria" #descripcion_categoriaInput="ngModel">
+                <label for="descripcion_categoria" [style.color]="(categoria.descripcion_categoria ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                    {{ categoria.descripcion_categoria ? 'Descripción de la categoría:' : 'Ingrese el la descripción de la categoría' }}
+                </label>
+                <small id="mensajeErrorTexto" class="form-text text-danger"
+                    [style.display]="(descripcion_categoriaInput.invalid && descripcion_categoriaInput.touched) ? 'block' : 'none'">
+                    Ingresar caracteres.
+                </small>
+            </div>
+            <div class="d-grid gap-2 mb-3">
+                <button *ngIf="!loadingCrear" class="btn btn-primary" id="botonCrearCuenta"
+                    [disabled]="!categoriaForm.form.valid"
+                    [ngStyle]="{'cursor': categoriaForm.form.valid ? 'pointer' : 'not-allowed'}">
+                    {{nombreBoton}}</button>
+                <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
+                    justify-content: center; text-align: center;"><app-spinner></app-spinner>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: -30px; align-content: center; align-items: center; flex-direction: row;">
+                <a routerLink="/dashboard" style="text-decoration: none; display: flex; align-items: center;">
+                    <span style="display: block; font-size: 50px; padding-bottom: 10px;"><</span>
+                    <span style="color: black; font-size: 16px;">Atrás</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

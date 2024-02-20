@@ -1,0 +1,136 @@
+<div class="wrapper" style="margin-top: 20px;">
+    <img style="margin-bottom: 20px;" src="../../../assets/img/logoOLX.jpg" class="logoAcceso">
+    <div *ngIf="signinSeccion1" style="display: flex;justify-content: center; align-items: flex-end; flex-direction: row;">
+        <div class="mt-3 mt-3">
+            <img *ngIf="!foto" class="fotoPerfil" src="../../../assets/img/perfilNull.png" alt="perfil">
+            <img *ngIf="foto" class="fotoPerfil" [src]="foto" alt="perfil">
+        </div>
+        <div style="width: 50%; margin-left: 10px; text-align: center;">
+            <label for="foto" style="color: rgb(110, 110, 110);">Cambiar foto:</label>
+            <input style="max-width: 250px; font-size: 11px;" type="file" id="foto" name="foto" class="form-control"
+                accept="image/png, image/jpg, image/jpeg, image/gif" (change)="alSeleccionarArchivo($event)"><br>
+        </div>
+    </div>
+    <div class="signin mt-3 mt-md-0">
+        <form #usuarioForm="ngForm" (ngSubmit)="guardarUsuario(usuarioForm)">
+
+            <div *ngIf="signinSeccion1" class="form-container">
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre" class="form-control"
+                                required [(ngModel)]="usuario.nombre" pattern="[a-zA-ZáéíóúüÁÉÍÓÚÜ]*" #nombreInput="ngModel">
+                            <label for="nombre" [style.color]="(usuario.nombre ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ usuario.nombre ? 'Nombre:' : 'Ingrese su nombre' }}
+                            </label>
+                            <small id="mensajeErrorTexto" class="form-text text-danger"
+                                [style.display]="(nombreInput.invalid && nombreInput.touched) ? 'block' : 'none'">
+                                Ingresar solo letras sin espacios.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" id="apellido" name="apellido" placeholder="Ingrese su apellido"
+                                class="form-control" required [(ngModel)]="usuario.apellido" pattern="[a-zA-ZáéíóúüÁÉÍÓÚÜ]*"
+                                #apellidoInput="ngModel">
+                            <label for="apellido"
+                                [style.color]="(usuario.apellido ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ usuario.apellido ? 'Apellido:' : 'Ingrese su apellido' }}
+                            </label>
+                            <small id="mensajeErrorTexto" class="form-text text-danger"
+                                [style.display]="(apellidoInput.invalid && apellidoInput.touched) ? 'block' : 'none'">
+                                Ingresar solo letras sin espacios.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="fecha_nacimiento" style="color: rgb(110, 110, 110);">Fecha de nacimiento:</label>
+                    <input [style.color]="(usuario.fecha_nacimiento? 'black' : 'rgb(150, 150, 150)')" type="date"
+                        id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" required
+                        [(ngModel)]="usuario.fecha_nacimiento" [max]="fechaMinima">
+                </div>
+                <div class="form-floating mb-3 mt-3">
+                    <select [style.color]="(usuario.id_tipo_usuario !== 0? 'black' : 'rgb(150, 150, 150)')" class="form-select"
+                    name="id_tipo_usuario" [(ngModel)]="usuario.id_tipo_usuario" required>
+                        <option value="0">Seleccionar</option>
+                        <option style="color: black" *ngFor="let tipoUsuario of tiposUsuario"
+                        [value]="tipoUsuario.id_tipo_usuario">{{ tipoUsuario.nombre_tipo_usuario }}</option>
+                    </select>
+                    <label for="id_tipo_usuario" style="color: rgb(110, 110, 110)">Tipo de usuario:</label>
+                </div>
+                <div style="height: 50px; display: flex; justify-content: space-between; margin-top: 20px; align-content: center; align-items: center; flex-direction: row;">
+                    <a routerLink="/dashboard" style="text-decoration: none; display: flex; align-items: center;">
+                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;"><</span>
+                                <span style="color: black; font-size: 16px;">Atrás</span>
+                    </a>
+                    <a (click)="mostrarSeccion2()"
+                        style="cursor: pointer; text-decoration: none; display: flex; align-items: center;">
+                        <span style="font-size: 16px;">Siguiente</span>
+                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;">></span>
+                    </a>
+                </div>
+            </div>
+
+            <div *ngIf="signinSeccion2" style="margin-top: 10px;">
+                <div class="form-floating mb-3 mt-3">
+                    <select [style.color]="(usuario.id_tipo_documento? 'black' : 'rgb(150, 150, 150)')" class="form-select"
+                    name="id_tipo_documento" [(ngModel)]="usuario.id_tipo_documento" required>
+                        <option value="0" selected>Seleccionar el tipo de documento</option>
+                        <option style="color: black" *ngFor="let tipoDocumento of tiposDocumento"
+                        [value]="tipoDocumento.id_tipo_documento">{{ tipoDocumento.nombre_tipo_documento }}</option>
+                    </select>
+                    <label for="id_tipo_documento" style="color: rgb(110, 110, 110)">Tipo de documento:</label>
+                </div>
+                <div class="form-floating mb-3 mt-3">
+                    <input type="number" id="numero_documento" name="numero_documento" placeholder="Ingrese su número de documento"
+                        class="form-control" required [(ngModel)]="usuario.numero_documento">
+                    <label for="numero_documento"
+                        [style.color]="(usuario.numero_documento? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                        {{ usuario.numero_documento ? 'Número de documento:' : 'Ingrese su número documento' }}</label>
+                </div>
+                <div class="form-floating mb-3 mt-3">
+                    <select [style.color]="(usuario.id_clase_usuario? 'black' : 'rgb(150, 150, 150)')" class="form-select"
+                    name="id_clase_usuario" [(ngModel)]="usuario.id_clase_usuario" required>
+                        <option value="0" selected>Seleccionar</option>
+                        <option style="color: black" *ngFor="let claseUsuario of clasesUsuario"
+                        [value]="claseUsuario.id_clase_usuario">{{ claseUsuario.nombre_clase_usuario }}</option>
+                    </select>
+                    <label style="color: rgb(110, 110, 110)">Clase de usuario:</label>
+                </div>
+                <div class="form-floating mb-3 mt-3">
+                    <select [style.color]="(usuario.genero? 'black' : 'rgb(150, 150, 150)')" class="form-select"
+                        name="genero" [(ngModel)]="usuario.genero" required>
+                        <option value="" selected>Seleccionar</option>
+                        <option value="hombre" style="color: black">Hombre</option>
+                        <option value="mujer" style="color: black">Mujer</option>
+                        <option value="otro" style="color: black">Otro</option>
+                    </select>
+                    <label for="genero" style="color: rgb(110, 110, 110)">Género:</label>
+                </div>
+                <div class="d-grid gap-2 mb-3">
+                    <button *ngIf="!loadingCrear" class="btn btn-primary" 
+                        [disabled]="
+                            (!usuario.nombre || !usuario.apellido || !usuario.correo || !usuario.telefono ||
+                            !usuario.id_tipo_usuario || !usuario.id_tipo_documento || !usuario.numero_documento ||
+                            !usuario.id_clase_usuario || !usuario.genero)"
+                        [ngStyle]="{'cursor': usuarioForm.form.valid ? 'pointer' : 'not-allowed'}">
+                        {{tituloBoton}}
+                    </button>
+                    <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
+                            justify-content: center; text-align: center;">
+                        <app-spinner></app-spinner>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: -10px; align-content: center; align-items: center; flex-direction: row;">
+                    <a (click)="mostrarSeccion1()"style="text-decoration: none; display: flex; align-items: center;">
+                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;"><</span>
+                                <span style="color: black; font-size: 16px;">Atrás</span>
+                    </a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

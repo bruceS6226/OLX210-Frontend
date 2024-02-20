@@ -1,0 +1,55 @@
+<div class="wrapper" style="margin-top: 20px;">
+    <img style="margin-bottom: 20px;" src="../../../assets/img/logoOLX.jpg" class="logoAcceso">
+    <div class="d-md-flex align-items-center">
+        <img class="logo" src="../../../assets/img/login.png" alt="img login">
+        <h2 style="margin-left: 20px; display: inline-block;">INICIO DE SESIÓN</h2>
+    </div>
+    <div class="signin mt-3 mt-md-0">
+        <form #usuarioForm="ngForm" (ngSubmit)="ingresarUsuario(usuarioForm)">
+            <div class="form-floating mb-3 mt-3">
+                <input type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico"
+                    class="form-control" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                    [(ngModel)]="usuario.correo" #correoInput="ngModel">
+                <label for="correo" [style.color]="(usuario.correo ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                    {{ usuario.correo ? 'Correo:' : 'Ingrese su correo' }}</label>
+                <small id="mensajeErrorCorreo" class="form-text text-danger"
+                    [style.display]="(correoInput.invalid && correoInput.touched) ? 'block' : 'none'">
+                    Ingrese un correo válido (ejemplo@email.com).</small>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="{{ mostrarContrasenia ? 'text' : 'password' }}" name="contrasenia" id="contrasenia"
+                    placeholder="Ingrese su contraseña" class="form-control" required [(ngModel)]="contrasenia"
+                    pattern="^(?=.*[a-zA-Z])(?=.*\d).{8,}$" #contraseniaInput="ngModel">
+                <label for="contrasenia" [style.color]="(contrasenia ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                    {{ contrasenia ? 'Contraseña:' : 'Ingrese su contraseña' }}</label>
+                <small id="mensajeErrorTexto" class="form-text text-danger"
+                    [style.display]="(contraseniaInput.invalid && contraseniaInput.touched) ? 'block' : 'none'">
+                    Ingresar al menos 8 caracteres, que incluya letras y números.</small>
+            </div>
+            <div class="form-check mb-3 mt-3">
+                <input type="checkbox" class="form-check-input" id="mostrarContrasenia"
+                    (click)="mostrarContraseniaFuntion()">
+                <label class="form-check-label" for="mostrarContrasenia" style="color: rgb(110, 110, 110);">
+                    Mostrar contraseña</label>
+            </div>
+            <div class="d-grid gap-2 mb-3">
+                <button *ngIf="!loadingCrear" class="btn btn-primary" id="botonCrearCuenta"
+                    [disabled]="!usuarioForm.form.valid"
+                    [ngStyle]="{'cursor': usuarioForm.form.valid ? 'pointer' : 'not-allowed'}">
+                    INGRESAR</button>
+                <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
+                    justify-content: center; text-align: center;"><app-spinner></app-spinner>
+                </div>
+            </div>
+            <div class="d-grid gap-2 mb-3" style="text-align: center;">
+                <p class="mt-1">No tienes cuenta? <a routerLink="/signin">Registrarse</a></p>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: -30px; align-content: center; align-items: center; flex-direction: row;">
+                <a (click) = "regresarAcceso()" style="text-decoration: none; display: flex; align-items: center;">
+                    <span style="display: block; font-size: 50px; padding-bottom: 10px;"><</span>
+                    <span style="color: black; font-size: 16px;">Atrás</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
