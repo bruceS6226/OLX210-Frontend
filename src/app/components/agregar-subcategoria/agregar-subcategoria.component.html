@@ -20,7 +20,7 @@
             <div class="form-floating mb-3 mt-3">
                 <select [style.color]="(subcategoria.id_categoria? 'black' : 'rgb(150, 150, 150)')" class="form-select"
                 name="id_categoria" [(ngModel)]="subcategoria.id_categoria" required>
-                    <option value="0" selected>Seleccionar</option>
+                    <option value="0" selected disabled>Seleccionar</option>
                     <option style="color: black" *ngFor="let categoria of categorias"
                     [value]="categoria.id_categoria">{{ categoria.nombre_categoria }}</option>
                 </select>
@@ -30,7 +30,7 @@
                 <input type="text" id="descripcion_subcategoria" name="descripcion_subcategoria" placeholder="Ingrese la descripción de la subcategoría" class="form-control"
                     required [(ngModel)]="subcategoria.descripcion_subcategoria" #descripcion_subcategoriaInput="ngModel">
                 <label for="descripcion_subcategoria" [style.color]="(subcategoria.descripcion_subcategoria ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                    {{ subcategoria.descripcion_subcategoria ? 'Descripción de la subcategoría:' : 'Ingrese el la descripción de la subcategoría' }}
+                    {{ subcategoria.descripcion_subcategoria ? 'Descripción de la subcategoría:' : 'Ingrese la descripción de la subcategoría' }}
                 </label>
                 <small id="mensajeErrorTexto" class="form-text text-danger"
                     [style.display]="(descripcion_subcategoriaInput.invalid && descripcion_subcategoriaInput.touched) ? 'block' : 'none'">
@@ -39,14 +39,14 @@
             </div>
             <div class="d-grid gap-2 mb-3">
                 <button *ngIf="!loadingCrear" class="btn btn-primary" id="botonCrearCuenta"
-                    [disabled]="!subcategoriaForm.form.valid"
+                    [disabled]="subcategoria.id_categoria === 0 || !subcategoriaForm.form.valid"
                     [ngStyle]="{'cursor': subcategoriaForm.form.valid ? 'pointer' : 'not-allowed'}">
                     {{nombreBoton}}</button>
                 <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
                     justify-content: center; text-align: center;"><app-spinner></app-spinner>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-top: -30px; align-content: center; align-items: center; flex-direction: row;">
+            <div style="display: flex; justify-content: space-between; margin-top: 20px; align-content: center; align-items: center; flex-direction: row;">
                 <a routerLink="/dashboard" style="text-decoration: none; display: flex; align-items: center;">
                     <span style="display: block; font-size: 50px; padding-bottom: 10px;"><</span>
                     <span style="color: black; font-size: 16px;">Atrás</span>

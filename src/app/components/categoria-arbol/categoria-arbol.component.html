@@ -1,0 +1,43 @@
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding (click)="seleccionarNodo(node)"
+        style="display: flex; justify-content: space-between;">
+        <div style="display: flex; align-items: center; justify-content: start; width: 100%;">
+            <button mat-icon-button disabled></button>
+            <button mat-button [matMenuTriggerFor]="menu">
+                <span style="font-weight: normal;">{{node.nombre_categoria}}</span>
+            </button>
+        </div>
+        <mat-slide-toggle color="warn"  [checked]="buscarBloqueoCategoria(node)" matTooltip="Activar o desactivar categoría"
+            matTooltipPosition="right" (change)="abrirDialogActivar($event, node)">
+        </mat-slide-toggle>
+    </mat-tree-node>
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding (click)="seleccionarNodo(node)"
+        style="display: flex; justify-content: space-between;">
+        <div style="display: flex; align-items: center; justify-content: start; width: 100%;">
+            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.nombre_categoria">
+                <mat-icon class="mat-icon-rtl-mirror">
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+            </button>
+            <button mat-button [matMenuTriggerFor]="menu">
+                <span style="font-weight: normal;">{{node.nombre_categoria}}</span>
+            </button>
+        </div>
+        <mat-slide-toggle color="warn" [checked]="buscarBloqueoCategoria(node)" matTooltip="Activar o desactivar categoría"
+            matTooltipPosition="right" (change)="abrirDialogActivar($event, node)">
+        </mat-slide-toggle>
+    </mat-tree-node>
+</mat-tree>
+
+<mat-menu #menu="matMenu" xPosition="after">
+    <button mat-menu-item (click)="agregarCategoria(categoria.id_categoria)">
+        <mat-icon>add</mat-icon> Agregar subcategoría
+    </button>
+
+    <button mat-menu-item routerLink="/edit-category/{{ categoria.id_categoria }}">
+        <mat-icon>edit</mat-icon> Editar
+    </button>
+    <button mat-menu-item (click)="abrirDialogEliminar()">
+        <mat-icon>delete</mat-icon> Eliminar
+    </button>
+</mat-menu>

@@ -1,0 +1,9 @@
+.publico-button {
+    background-color: white; /* Verde claro para público */
+    color: black; /* Texto en blanco para contraste */
+}
+
+.privado-button {
+    background-color: black; /* Rojo oscuro para privado */
+    color: white; /* Texto en blanco para contraste */
+}

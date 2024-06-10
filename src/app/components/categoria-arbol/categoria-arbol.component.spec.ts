@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NavbarusuarioComponent } from './navbarusuario.component';
+import { CategoriaArbolComponent } from './categoria-arbol.component';
 
-describe('NavbarusuarioComponent', () => {
-  let component: NavbarusuarioComponent;
-  let fixture: ComponentFixture<NavbarusuarioComponent>;
+describe('TreeCategoryComponent', () => {
+  let component: CategoriaArbolComponent;
+  let fixture: ComponentFixture<CategoriaArbolComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NavbarusuarioComponent ]
+      declarations: [ CategoriaArbolComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NavbarusuarioComponent);
+    fixture = TestBed.createComponent(CategoriaArbolComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,47 @@
+<div class="wrapper" style="margin-top: 20px;">
+    <img style="margin-bottom: 20px;" src="../../../assets/img/logoOLX.jpg" class="logoAcceso">
+    <div class="d-md-flex align-items-center">
+        <img class="logo" src="../../../assets/img/login.png" alt="img login">
+        <h2 style="margin-left: 20px; display: inline-block;">CAMBIO DE CONTRASEÑA</h2>
+    </div>
+    <div class="signin mt-3 mt-md-0">
+        <form #usuarioForm="ngForm" (ngSubmit)="actualizarContrasenia(usuarioForm)">
+            <div class="form-floating mb-3 mt-3">
+                <input type="{{ mostrarContrasenia ? 'text' : 'password' }}" name="contrasenia" id="contrasenia"
+                    placeholder="Ingrese su contraseña" class="form-control" required [(ngModel)]="contrasenia"
+                    pattern="^(?=.*[a-zA-Z])(?=.*\d).{8,}$" #contraseniaInput="ngModel">
+                <label for="contrasenia" [style.color]="(contrasenia ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                    {{ contrasenia ? 'Contraseña nueva:' : 'Ingrese su nueva contraseña' }}</label>
+                <small id="mensajeErrorTexto" class="form-text text-danger"
+                    [style.display]="(contraseniaInput.invalid && contraseniaInput.touched) ? 'block' : 'none'">
+                    Ingresar al menos 8 caracteres, que incluya letras y números.</small>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="{{ mostrarContrasenia ? 'text' : 'password' }}" name="confirmarContrasenia"
+                    id="confirmarContrasenia" placeholder="Confirmar contraseña" class="form-control" required
+                    [(ngModel)]="confirmarContrasenia">
+                <label for="confirmarContrasenia"
+                    [style.color]="(confirmarContrasenia? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                    {{ confirmarContrasenia ? 'Confirmar nueva contraseña' : 'Confirme su nueva contraseña' }}</label>
+                <small id="mensajeErrorContrasenia" class="form-text text-danger"
+                    *ngIf="contrasenia !== confirmarContrasenia">Las contraseñas no coinciden.</small>
+            </div>
+            <div class="form-check mb-3 mt-3">
+                <input type="checkbox" class="form-check-input" id="mostrarContrasenia"
+                    (click)="mostrarContraseniaFuntion()">
+                <label class="form-check-label" for="mostrarContrasenia" style="color: rgb(110, 110, 110);">
+                    Mostrar contraseña</label>
+            </div>
+            <div class="d-grid gap-2 mb-3">
+                <button *ngIf="!loadingCrear" mat-raised-button color="primary" id="botonCrearCuenta">
+                    <mat-icon>lock_open</mat-icon>ACTUALIZAR CONTRASEÑA</button>
+                <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
+                    justify-content: center; text-align: center;"><app-spinner></app-spinner>
+                </div>
+            </div>
+            <button mat-mini-fab color="primary" (click)="regresar()" matTooltip="Atrás">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </form>
+    </div>
+</div>

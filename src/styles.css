@@ -1,14 +1,16 @@
 * {
     box-sizing: border-box;
-        margin: 0px;
-        padding: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
-html, body {
-    height: autoy;
+html,
+body {
+    height: auto;
     margin: 0;
     padding: 0;
 }
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -21,29 +23,66 @@ html, body {
     height: 90px;
     margin: 0px 0px 0px 0px;
     display: inline-block;
+
 }
+
+.logoOLX {
+    max-width: auto;
+    height: 40px;
+    margin-left: 20px;
+}
+
 .fotoPerfil {
-    height: 130px;
+    height: 125px;
     margin: 0px 0px 0px 0px;
     display: inline-block;
 }
+
 .logoAcceso {
-    width: 400px;
+    max-width: 410px;
+    width: 100%;
     display: inline-block;
 }
-.signin{
-    max-width: 400px;
+
+.signin {
+    max-width: 430px;
     width: 100%;
 }
-.btn-primary, .btn-secondary {
-    min-width: 170px;
-    max-width: 500px;
-    transition: all 0.3s;
+
+.editarPerfil {
+    max-width: 450px;
+    width: 100%;
 }
 
-.btn-primary:hover, .btn-secondary:hover {
-    background-color: rgb(251, 252, 201) !important;
-    color: rgb(0, 0, 0) !important;
-    transform:  scale(1.02, 1.02);
+.iconsAtrasSiguiente {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    align-content: center;
+    align-items: center;
+    flex-direction: row;
 }
 
+#boton {
+    width: 200px;
+}
+
+@media (max-width: 400px) {
+    #boton {
+        width: 150px;
+    }
+
+    .logoOLX {
+        top: 10px;
+        width: 60%;
+        height: auto;
+        margin-left: 0px;
+    }
+
+    .logoAcceso {
+        max-width: 410px;
+        width: 70%;
+        display: inline-block;
+    }
+}

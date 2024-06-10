@@ -1,0 +1,16 @@
+<app-navbar></app-navbar>
+<ng-container *ngIf="tokenParams; else verificacionPendiente">
+    <div class="verificacion-pendiente">
+        <h1>Bienvenido a OLX-8</h1>
+        <p>¡Explora una amplia variedad de anuncios, desde productos y servicios hasta oportunidades laborales!</p>
+        <app-spinner class="mt-5"></app-spinner>
+    </div>
+</ng-container>
+
+<ng-template #verificacionPendiente>
+    <div class="verificacion-pendiente">
+        <h1>Debe confirmar su correo electrónico</h1>
+        <p>Si no ha recibido el correo de verificación, puede solicitarlo nuevamente pulsando el siguiente botón:</p>
+        <button mat-raised-button color="primary" (click)="reenviarCorreo()">Reenviar correo de verificación</button>
+    </div>
+</ng-template>

@@ -21,7 +21,7 @@
                 <input type="text" id="descripcion_categoria" name="descripcion_categoria" placeholder="Ingrese la descripción de la categoría" class="form-control"
                     required [(ngModel)]="categoria.descripcion_categoria" #descripcion_categoriaInput="ngModel">
                 <label for="descripcion_categoria" [style.color]="(categoria.descripcion_categoria ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                    {{ categoria.descripcion_categoria ? 'Descripción de la categoría:' : 'Ingrese el la descripción de la categoría' }}
+                    {{ categoria.descripcion_categoria ? 'Descripción de la categoría:' : 'Ingrese la descripción de la categoría' }}
                 </label>
                 <small id="mensajeErrorTexto" class="form-text text-danger"
                     [style.display]="(descripcion_categoriaInput.invalid && descripcion_categoriaInput.touched) ? 'block' : 'none'">
@@ -29,19 +29,16 @@
                 </small>
             </div>
             <div class="d-grid gap-2 mb-3">
-                <button *ngIf="!loadingCrear" class="btn btn-primary" id="botonCrearCuenta"
-                    [disabled]="!categoriaForm.form.valid"
-                    [ngStyle]="{'cursor': categoriaForm.form.valid ? 'pointer' : 'not-allowed'}">
+                <button *ngIf="!loadingCrear" type="submit" mat-raised-button color="primary" id="botonCrearCuenta" >
                     {{nombreBoton}}</button>
                 <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
                     justify-content: center; text-align: center;"><app-spinner></app-spinner>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-top: -30px; align-content: center; align-items: center; flex-direction: row;">
-                <a routerLink="/dashboard" style="text-decoration: none; display: flex; align-items: center;">
-                    <span style="display: block; font-size: 50px; padding-bottom: 10px;"><</span>
-                    <span style="color: black; font-size: 16px;">Atrás</span>
-                </a>
+            <div class="iconsAtrasSiguiente">
+                <button mat-mini-fab color="primary" type="button" routerLink="/dashboard/2" matTooltip="Atrás">
+                    <mat-icon>arrow_back</mat-icon>
+                </button>
             </div>
         </form>
     </div>

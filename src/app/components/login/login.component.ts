@@ -18,10 +18,10 @@ export class LoginComponent {
 
   public usuario: Usuario;
   public contrasenia: string;
+  public existeCorreo: boolean = false;
+  public existeContrasenia: boolean = false;
   public loadingCrear: boolean = false;
-  public loadingUbicacion: boolean = false;
   public loadingCancelar: boolean = false;
-  private myAppIdUser: string;
 
   constructor(
     private _usuarioService: UsuarioService,
@@ -29,26 +29,74 @@ export class LoginComponent {
     private toastr: ToastrService,
     private router: Router,
   ) {
-    this.usuario = new Usuario(0, '', '', '', '', '', '', '', '', '', '', 0, 0, 0);
+    this.usuario = new Usuario(0, '', '', '', '', '', '', '', '', '', '', '', false, false, 0, 0, 0, 1, 0, 0);
     this.contrasenia = "";
-    this.myAppIdUser = environment.id_user;
+  }
+
+  private temporizador: any = null;
+  comprobarCorreo() {
+    clearTimeout(this.temporizador);
+    this.temporizador = setTimeout(() => {
+      this._usuarioService.comprobarExistenciaUsuario('correo', this.usuario).subscribe({
+        next: (response) => {
+          this.existeCorreo = response;
+        },
+        error: (e: HttpErrorResponse) => { this._errorService.msjError(e); }
+      })
+    }, 500);
+  }
+  comprobarContrasenia() {
+    if (this.existeCorreo) {
+      this.usuario.contrasenia = this.contrasenia;
+      clearTimeout(this.temporizador);
+      this.temporizador = setTimeout(() => {
+        this._usuarioService.comprobarExistenciaUsuario('contrasenia', this.usuario).subscribe({
+          next: (response) => {
+            this.existeContrasenia = response;
+          },
+          error: (e: HttpErrorResponse) => { this._errorService.msjError(e); }
+        })
+      }, 500);
+    }
+  }
+
+  verificarFormulario(form: NgForm) {
+    for (const controlName in form.controls) {
+      if (form.controls.hasOwnProperty(controlName)) {
+        const control = form.controls[controlName];
+        if (control.invalid || control.errors?.['required']) {
+          this.toastr.error('Por favor llenar todos los datos correctamente')
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   ingresarUsuario(form: NgForm) {
-    this.loadingCrear = true;
-    this.usuario.contrasenia = this.contrasenia;
-    this._usuarioService.login(this.usuario).subscribe({
-      next: (response) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('id_usuario', response.id_usuario.toString());
-        this.toastr.success(`Es un placer tenerte de nuevo`, 'BIENVENIDO');
-          this.router.navigate(['/']);
-      },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
-        this.loadingCrear = false;
-      }
-    });
+    if (this.verificarFormulario(form)) {
+      this.loadingCrear = true;
+      this.usuario.contrasenia = this.contrasenia;
+      this._usuarioService.login(this.usuario).subscribe({
+        next: (response) => {
+          if (response.id_rol === 2) {
+            localStorage.setItem('user', JSON.stringify(response.usuario));
+            localStorage.setItem('token', response.token);
+            this.toastr.success(`Es un placer tenerte de nuevo`, 'BIENVENIDO');
+            this.router.navigate(['/']);
+            this._usuarioService.updateComportamiento(response.usuario.id_comportamiento, 'inicio_sesion').subscribe({});
+          } else {
+            this.toastr.info(`Por favor ingrese de nuevo. Usted es administrador, ha sido redirigido a su respectivo link`);
+            this.loadingCrear = false;
+            this.router.navigate(['login/admin']);
+          }
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+          this.loadingCrear = false;
+        }
+      });
+    }
   }
 
   public mostrarContrasenia: boolean = false;
@@ -57,6 +105,10 @@ export class LoginComponent {
 
   public regresarAcceso() {
     this.router.navigate(['/acceso']);
+  }
+
+  public registrar() {
+    this.router.navigate(['/signin']);
   }
 
 }

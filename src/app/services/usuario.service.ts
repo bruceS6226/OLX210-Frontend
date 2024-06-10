@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Usuario } from '../interfaces/usuario';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { TiposUsuario } from '../interfaces/tiposUsuario';
 import { TiposDocumento } from '../interfaces/tiposDocumento';
 import { ClasesUsuario } from '../interfaces/clasesUsuario';
 import { Subcategoria } from '../interfaces/subCategoria';
 import { Categoria } from '../interfaces/categoria';
-import { Administrador } from '../interfaces/adminstrador';
+import { Comportamiento } from '../interfaces/comportamiento';
+import { EstadoDatos } from '../interfaces/estadoDatos';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +18,13 @@ import { Administrador } from '../interfaces/adminstrador';
 export class UsuarioService {
   private myAppUrl: string;
   private myApiUrl: string;
+  public usuarioActual: Usuario | null;
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.url;
-    this.myApiUrl = 'api/users/'
+    this.myApiUrl = 'api/users/';
+    const usuarioGuardado = localStorage.getItem('user');
+    this.usuarioActual = usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
   }
 
   //usuarios
@@ -27,39 +32,49 @@ export class UsuarioService {
     return this.http.post(`${this.myAppUrl}${this.myApiUrl}usuario`, user);
   }
   login(user: Usuario): Observable<any> {
-    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}usuario/login`, user)
+    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}usuario/login`, user).pipe(
+      tap((response: any) => {
+      })
+    );
   }
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.myAppUrl}${this.myApiUrl}usuarios`)
   }
-  deleteUsuario(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.myAppUrl}${this.myApiUrl}usuario/${id}`)
+  deleteUsuario(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.myAppUrl}${this.myApiUrl}usuario/${id}`)
   }
   getUsuario(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.myAppUrl}${this.myApiUrl}usuario/${id}`)
   }
-  updateUsuario(id: number, user: Usuario): Observable<void> {
-    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}usuario/${id}`, user);
+  updateUsuario(id: number, user: Usuario): Observable<any> {
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}usuario/${id}`, user);
   }
-
-  //administradores
-  guardarAdministrador(administrador: Administrador): Observable<any> { // Cambiar el nombre y el tipo de parámetro
-    return this.http.post(`${this.myAppUrl}${this.myApiUrl}admin`, administrador); // Cambiar el nombre del parámetro
+  bloquearOdesbloquearUsuario(id: number): Observable<any>{
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}bloquear-o-desbloquear-usuario/${id}`, null);
   }
-  loginAdmin(administrador: Administrador): Observable<any> { // Cambiar el nombre y el tipo de parámetro
-    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}admin/login`, administrador); // Cambiar el nombre del parámetro
+  comprobarExistenciaUsuario(atributo: string, usuario: Usuario): Observable<boolean>{
+    return this.http.post<boolean>(`${this.myAppUrl}${this.myApiUrl}comprobar-usuario/${atributo}`, usuario);
   }
-  getAdministradores(): Observable<Administrador[]> { // Cambiar el tipo de retorno
-    return this.http.get<Administrador[]>(`${this.myAppUrl}${this.myApiUrl}administradores`); // Cambiar el tipo de retorno
+  //correo
+  reenviarCorreo(token:string): Observable<any>{
+    return this.http.post(`${this.myAppUrl}${this.myApiUrl}verificar-correo/${token}`, null);
   }
-  deleteAdministrador(id: number): Observable<void> { // Cambiar el nombre y el tipo de parámetro
-    return this.http.delete<void>(`${this.myAppUrl}${this.myApiUrl}admin/${id}`); // Cambiar el nombre del parámetro
+  validarCorreo(token:string): Observable<any>{
+    return this.http.post(`${this.myAppUrl}${this.myApiUrl}validar-correo/${token}`, null);
   }
-  getAdministrador(id: number): Observable<Administrador> { // Cambiar el tipo de retorno
-    return this.http.get<Administrador>(`${this.myAppUrl}${this.myApiUrl}admin/${id}`); // Cambiar el tipo de retorno
+  cambiarContrasenia(token:string): Observable<boolean>{
+    return this.http.post<boolean>(`${this.myAppUrl}${this.myApiUrl}cambiar-contrasenia/${token}`, null);
   }
-  updateAdministrador(id: number, administrador: Administrador): Observable<void> { // Cambiar el nombre y el tipo de parámetro
-    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}admin/${id}`, administrador); // Cambiar el nombre del parámetro
+  validarOTP(otp:string): Observable<boolean>{
+    return this.http.post<boolean>(`${this.myAppUrl}${this.myApiUrl}validar-otp/${otp}`, null);
+  }
+  actualizarContrasenia(token: string, contrasenia: string): Observable<any>{
+    const body = { contrasenia: contrasenia };
+    return this.http.post(`${this.myAppUrl}${this.myApiUrl}restablecer-contrasenia/${token}`, body)
+  }
+  notificar(token: string, accion: string, nombreObjeto: string): Observable<boolean>{
+    const body = { token: token, accion: accion, nombreObjeto: nombreObjeto };
+    return this.http.post<boolean>(`${this.myAppUrl}${this.myApiUrl}notificar/${token}`, body);
   }
 
   //imagen
@@ -68,7 +83,7 @@ export class UsuarioService {
     if (foto) {
       formData.append('foto', foto);
     }
-    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}${id}`, formData);
+    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}usuario/${id}`, formData);
   }
   getImage(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.myAppUrl}${this.myApiUrl}${id}`)
@@ -105,14 +120,17 @@ export class UsuarioService {
   getCategorias(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(`${this.myAppUrl}${this.myApiUrl}categories`)
   }
-  deleteCategoria(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.myAppUrl}${this.myApiUrl}category/${id}`)
+  deleteCategoria(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.myAppUrl}${this.myApiUrl}category/${id}`)
   }
   getCategoria(id: number): Observable<Categoria> {
     return this.http.get<Categoria>(`${this.myAppUrl}${this.myApiUrl}category/${id}`)
   }
-  updateCategoria(id: number, category: Categoria): Observable<void> {
-    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}category/${id}`, category);
+  updateCategoria(id: number, category: Categoria): Observable<any> {
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}category/${id}`, category);
+  }
+  bloquearOdesbloquearCategoria(id: number): Observable<any>{
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}bloquear-o-desbloquear-category/${id}`, null);
   }
 
   //subcategorias
@@ -125,10 +143,48 @@ export class UsuarioService {
   deleteSubcategoria(id: number): Observable<void> {
     return this.http.delete<void>(`${this.myAppUrl}${this.myApiUrl}subcategory/${id}`)
   }
+  updateSubcategoria(id: number, subcategory: Subcategoria): Observable<void> {
+    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}subcategory/${id}`, subcategory);
+  }
   getSubcategoria(id: number): Observable<Subcategoria> {
     return this.http.get<Subcategoria>(`${this.myAppUrl}${this.myApiUrl}subcategory/${id}`)
   }
-  updateSubcategoria(id: number, subcategory: Subcategoria): Observable<void> {
-    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}subcategory/${id}`, subcategory);
+  organizarEnArbol(categorias: Categoria[]): Categoria[] {
+    const categoriasArbol: Categoria[] = [];
+    const categoriasMap = new Map<number, Categoria>();
+
+    categorias.forEach(categoria => {
+      categoriasMap.set(categoria.id_categoria, categoria);
+      if (!categoria.id_categoria_padre) {
+        categoriasArbol.push(categoria);
+      } else {
+        const padre = categoriasMap.get(categoria.id_categoria_padre);
+        if (padre) {
+          if (!padre.categoria) {
+            padre.categoria = [];
+          }
+          padre.categoria.push(categoria);
+        }
+      }
+    });
+
+    return categoriasArbol;
+  }
+  //comportamiento
+  getComportamiento(id: number): Observable<Comportamiento> {
+    return this.http.get<Comportamiento>(`${this.myAppUrl}${this.myApiUrl}comportamiento/${id}`);
+  }
+  getComportamientos(): Observable<Comportamiento[]> {
+    return this.http.get<Comportamiento[]>(`${this.myAppUrl}${this.myApiUrl}comportamientos`);
+  }
+  updateComportamiento(id: number, valor: string): Observable<Comportamiento> {
+    return this.http.put<Comportamiento>(`${this.myAppUrl}${this.myApiUrl}comportamiento/${id}/${valor}`, null);
+  }
+  //estado datos
+  getEstadoDatos(id: number): Observable<EstadoDatos>{
+    return this.http.get<EstadoDatos>(`${this.myAppUrl}${this.myApiUrl}estado-datos/${id}`);
+  }
+  updateEstadoDatos(id: number, estadoDatos: EstadoDatos): Observable<void>{
+    return this.http.put<void>(`${this.myAppUrl}${this.myApiUrl}estado-datos/${id}`, estadoDatos);
   }
 }

@@ -18,6 +18,8 @@ export class AgregarCategoriaComponent implements OnInit {
   public loadingCrear: boolean = false;
   public id_categoria: number;
   public nombreBoton: String;
+  private id_categoria_padre: number;
+  
   constructor(
     private _usuarioService: UsuarioService,
     private _errorService: ErrorService,
@@ -26,7 +28,8 @@ export class AgregarCategoriaComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.id_categoria = 0;
-    this.categoria = new Categoria(this.id_categoria, '', '');
+    this.id_categoria_padre = 0;
+    this.categoria = new Categoria(this.id_categoria, '', '', this.id_categoria_padre, false);
     this.nombreBoton = "";
   }
   ngOnInit() {
@@ -37,6 +40,8 @@ export class AgregarCategoriaComponent implements OnInit {
         this.obtenerCategoria();
         this.nombreBoton = "EDITAR CATEGORÍA";
       }
+      this.id_categoria_padre = Number(params['id-padre'])
+      this.categoria.id_categoria_padre = this.id_categoria_padre;
     });
   }
   obtenerCategoria() {
@@ -55,7 +60,7 @@ export class AgregarCategoriaComponent implements OnInit {
       this._usuarioService.updateCategoria(this.id_categoria, this.categoria).subscribe({
         next: (response) => {
           this.toastr.success(`La categoría fue actualizada exitosamente`, 'CATEGORÍA ACTUALIZADA');
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard/2']);
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
@@ -66,7 +71,7 @@ export class AgregarCategoriaComponent implements OnInit {
       this._usuarioService.guardarCategoria(this.categoria).subscribe({
         next: (response) => {
           this.toastr.success(`La categoría fue agregada exitosamente`, 'CATEGORÍA AGREGADA');
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard/2']);
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);

@@ -1,222 +1,27 @@
-<app-navbar-admin></app-navbar-admin>
+<app-navbar></app-navbar>
 <div class="wrapper">
-  <div class="container-fluid mt-3 mt-md-0">
-    <ul class="nav nav-tabs" id="myTabs">
-      <li class="nav-item">
-        <a class="nav-link active" id="usuarios-tab" data-toggle="tab" href="#usuarios">Usuarios</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="administradores-tab" data-toggle="tab" href="#administradores">Administradores</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="categorias-tab" data-toggle="tab" href="#categorias">Categorías</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="subcategorias-tab" data-toggle="tab" href="#subcategorias">Subcategorías</a>
-      </li>
-    </ul>
-    <div class="tab-content mt-3">
-      <div class="tab-pane fade show active" id="usuarios">
-        <div style="display: flex; justify-content: flex-end;">
-          <div style="display: flex; width: 300px; justify-content: center;">
-            <button *ngIf="!loadingAgregar" class="btn btn-primary" (click)="agregarUsuario()">
-              AGREGAR NUEVO USUARIO
+  <div class="container-fluid">
+    <div class="tab-content">
+      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="index"
+      class="w-100" animationDuration="0ms" (selectedTabChange)="cambioSeleccion($event)">
+        <mat-tab label="USUARIOS">
+          <app-usuarios-clientes></app-usuarios-clientes>
+        </mat-tab>
+        <mat-tab label="ADMINISTRADORES">
+          <app-usuarios-administradores></app-usuarios-administradores>
+        </mat-tab>
+        <mat-tab label="CATEGORÍAS">
+          <div style="display: flex; justify-content: flex-end; align-items: center; position: absolute; right: 0;">
+            <button mat-mini-fab color="primary" (click)="agregarCategoria(0)"
+            matTooltip="Agregar nueva categoría superior" matTooltipPosition="right">
+              <mat-icon>add</mat-icon>
             </button>
-            <div class="spinner-container" *ngIf="loadingAgregar" style="display: flex; flex-direction: column; align-items: center;
-                  justify-content: center; text-align: center;">
-              <app-spinner></app-spinner>
-            </div>
           </div>
-        </div>
-        <div class="title">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Apellido</th>
-                <th scope="col">Correo electrónico</th>
-                <th scope="col">Teléfono</th>
-                <th scope="col">Género</th>
-                <th scope="col">Fecha de nacimiento</th>
-                <th scope="col">Ubicación</th>
-                <th scope="col">Número de documento</th>
-                <th scope="col">Tipo de usuario</th>
-                <th scope="col">Tipo de documento</th>
-                <th scope="col">Clase de usuario</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let u of usuarios">
-                <td>{{ u.nombre }}</td>
-                <td>{{ u.apellido }} </td>
-                <td>{{ u.correo }}</td>
-                <td>{{ u.telefono }} </td>
-                <td>{{ u.genero }}</td>
-                <td>{{ u.fecha_nacimiento }}</td>
-                <td>{{ u.ubicacion }}</td>
-                <td>{{ u.numero_documento }}</td>
-                <td>{{ u.tipo_usuario?.nombre_tipo_usuario }}</td>
-                <td>{{ u.tipo_documento?.nombre_tipo_documento }}</td>
-                <td>{{ u.clase_usuario?.nombre_clase_usuario }}</td>
-                <td>
-                  <div>
-                    <button *ngIf="!loadingAgregar" (click)="eliminarUsuario(u.id_usuario!)" type="button"
-                      class="btn btn-secondary btn-sm ms-2" style="background-color: rgb(207, 7, 7);">Eliminar</button>
-                    <button *ngIf="!loadingAgregar" type="button" class="btn btn-secondary btn-sm ms-2"
-                      style="background-color: rgb(194, 207, 7);"
-                      [routerLink]="['/update-perfil', u.id_usuario]">Editar</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <h5 *ngIf="usuarios.length == 0">No existen usuarios registrados</h5>
-        </div>
-      </div>
-
-      <div class="tab-pane fade" id="administradores">
-        <div style="display: flex; justify-content: flex-end;">
-          <div style="display: flex; width: 300px; justify-content: center;">
-            <button *ngIf="!loadingAgregar" class="btn btn-primary" (click)="agregarAdministrador()">
-              AGREGAR NUEVO ADMINISTRADOR
-            </button>
-            <div class="spinner-container" *ngIf="loadingAgregar" style="display: flex; flex-direction: column; align-items: center;
-                  justify-content: center; text-align: center;">
-              <app-spinner></app-spinner>
-            </div>
+          <div class="title mt-5">
+            <app-categoria-arbol style="width: 98%;"></app-categoria-arbol>
           </div>
-        </div>
-        <div class="title">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Apellido</th>
-                <th scope="col">Correo electrónico</th>
-                <th scope="col">Teléfono</th>
-                <th scope="col">Género</th>
-                <th scope="col">Fecha de nacimiento</th>
-                <th scope="col">Ubicación</th>
-                <th scope="col">Número de documento</th>
-                <th scope="col">Tipo de usuario</th>
-                <th scope="col">Tipo de documento</th>
-                <th scope="col">Clase de usuario</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let a of administradores">
-                <td>{{ a.nombre }}</td>
-                <td>{{ a.apellido }} </td>
-                <td>{{ a.correo }}</td>
-                <td>{{ a.telefono }} </td>
-                <td>{{ a.genero }}</td>
-                <td>{{ a.fecha_nacimiento }}</td>
-                <td>{{ a.ubicacion }}</td>
-                <td>{{ a.numero_documento }}</td>
-                <td>{{ a.tipo_usuario?.nombre_tipo_usuario }}</td>
-                <td>{{ a.tipo_documento?.nombre_tipo_documento }}</td>
-                <td>{{ a.clase_usuario?.nombre_clase_usuario }}</td>
-                <td>
-                  <div>
-                    <button *ngIf="!loadingAgregar" (click)="eliminarAdministrador(a.id_administrador!)" type="button"
-                      class="btn btn-secondary btn-sm ms-2" style="background-color: rgb(207, 7, 7);">Eliminar</button>
-                    <button *ngIf="!loadingAgregar" type="button" class="btn btn-secondary btn-sm ms-2"
-                      style="background-color: rgb(194, 207, 7);"
-                      [routerLink]="['/update-perfil-admin', a.id_administrador]">Editar</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <h5 *ngIf="administradores.length == 0">No existen administradores registrados</h5>
-        </div>
-      </div>
-
-      <div class="tab-pane fade" id="categorias">
-        <div style="display: flex; justify-content: flex-end;">
-          <div style="display: flex; width: 300px; justify-content: center;">
-            <button *ngIf="!loadingAgregar" class="btn btn-primary" (click)="agregarCategoria()">
-              AGREGAR NUEVA CATEGORÍA
-            </button>
-            <div class="spinner-container" *ngIf="loadingAgregar" style="display: flex; flex-direction: column; align-items: center;
-                    justify-content: center; text-align: center;">
-              <app-spinner></app-spinner>
-            </div>
-          </div>
-        </div>
-        <div class="title">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Nombre categoría</th>
-                <th scope="col">Descripción de la categoría</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let c of categorias">
-                <td>{{ c.nombre_categoria }}</td>
-                <td>{{ c.descripcion_categoria }}</td>
-                <td>
-                  <div>
-                    <button *ngIf="!loadingAgregar" (click)="eliminarCategoria(c.id_categoria!)" type="button"
-                      class="btn btn-secondary btn-sm ms-2" style="background-color: rgb(207, 7, 7);">Eliminar</button>
-                    <button *ngIf="!loadingAgregar" type="button" class="btn btn-secondary btn-sm ms-2"
-                      style="background-color: rgb(194, 207, 7);"
-                      [routerLink]="['/edit-category', c.id_categoria]">Editar</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <h5 *ngIf="usuarios.length == 0">No existen categorías registrados</h5>
-        </div>
-      </div>
-      <div class="tab-pane fade" id="subcategorias">
-        <div style="display: flex; justify-content: flex-end;">
-          <div style="display: flex; width: 300px; justify-content: center;">
-            <button *ngIf="!loadingAgregar" class="btn btn-primary" (click)="agregarSubcategoria()">
-              AGREGAR NUEVA SUBCATEGORÍA
-            </button>
-            <div class="spinner-container" *ngIf="loadingAgregar" style="display: flex; flex-direction: column; align-items: center;
-                    justify-content: center; text-align: center;">
-              <app-spinner></app-spinner>
-            </div>
-          </div>
-        </div>
-        <div class="title">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Nombre subcategoría</th>
-                <th scope="col">Categoría a la que pertenece</th>
-                <th scope="col">Descripción de la categoría</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let s of subcategorias">
-                <td>{{ s.nombre_subcategoria }}</td>
-                <td>{{ s.categoria?.nombre_categoria }}</td>
-                <td>{{ s.descripcion_subcategoria }} </td>
-                <td>
-                  <div>
-                    <button *ngIf="!loadingAgregar" (click)="eliminarSubcategoria(s.id_subcategoria!)" type="button"
-                      class="btn btn-secondary btn-sm ms-2" style="background-color: rgb(207, 7, 7);">Eliminar</button>
-                    <button *ngIf="!loadingAgregar" type="button" class="btn btn-secondary btn-sm ms-2"
-                      style="background-color: rgb(194, 207, 7);"
-                      [routerLink]="['/edit-subcategory', s.id_subcategoria]">Editar</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <h5 *ngIf="usuarios.length == 0">No existen usuarios registrados</h5>
-        </div>
-      </div>
+        </mat-tab>
+      </mat-tab-group>
     </div>
-
   </div>
 </div>

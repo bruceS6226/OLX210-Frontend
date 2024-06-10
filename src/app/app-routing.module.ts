@@ -14,7 +14,11 @@ import { AgregarSubcategoriaComponent } from './components/agregar-subcategoria/
 import { SignInAdminComponent } from './components/sign-in-admin/sign-in-admin.component';
 import { AccesoAdminComponent } from './components/acceso-admin/acceso-admin.component';
 import { LoginAdminComponent } from './components/login-admin/login-admin.component';
-import { EditarPerfilAdminComponent } from './components/editar-perfil-admin/editar-perfil-admin.component';
+import { AyudaUsuarioComponent } from './components/ayuda-usuario/ayuda-usuario.component';
+import { RestrictionVerification } from './utils/restriction-verification';
+import { ExistenciaToken } from './utils/existenciaToken';
+import { CambiarContraseniaComponent } from './components/cambiar-contrasenia/cambiar-contrasenia.component';
+import { ValidarOTP } from './utils/validarOTP';
 
 //guards
 const routes: Routes = [
@@ -22,16 +26,20 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [RestrictionSignLoginGuard]  },
   { path: 'acceso', component: AccesoComponent, canActivate: [RestrictionSignLoginGuard]  },
   { path: 'signin', component: SignInComponent, canActivate: [RestrictionSignLoginGuard]  },
-  { path: 'update-perfil/:id', component: EditarPerfilComponent, canActivate: [RestrictionPerfil]  },
+  { path: 'my-perfil', component: EditarPerfilComponent, canActivate: [ExistenciaToken]  },
+  { path: 'verificar-correo', component: AyudaUsuarioComponent, canActivate: [RestrictionVerification]  },
+  { path: 'verificando/:token', component: AyudaUsuarioComponent, canActivate: [RestrictionVerification]  },
+  { path: 'change-password/:otp', component: CambiarContraseniaComponent, canActivate: [ValidarOTP]  },
   //admin
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'login/admin', component: LoginAdminComponent, canActivate: [RestrictionSignLoginGuard]  },
   { path: 'acceso/admin', component: AccesoAdminComponent, canActivate: [RestrictionSignLoginGuard]  },
-  { path: 'admin', component: SignInAdminComponent, canActivate: [RestrictionSignLoginGuard] },
+  { path: 'signin/admin', component: SignInAdminComponent, canActivate: [RestrictionSignLoginGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/:pestania', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'create-user', component: SignInComponent, canActivate: [AuthGuard]  },
   { path: 'create-admin', component: SignInAdminComponent, canActivate: [AuthGuard]  },
-  { path: 'update-perfil-admin/:id', component: EditarPerfilAdminComponent, canActivate: [RestrictionPerfil]  },
-  { path: 'add-category', component: AgregarCategoriaComponent, canActivate: [AuthGuard] },
+  { path: 'update-perfil/:id', component: EditarPerfilComponent, canActivate: [AuthGuard]  },
+  { path: 'add-category/:id-padre', component: AgregarCategoriaComponent, canActivate: [AuthGuard] },
   { path: 'add-subcategory', component: AgregarSubcategoriaComponent, canActivate: [AuthGuard] },
   { path: 'edit-category/:id', component: AgregarCategoriaComponent, canActivate: [AuthGuard] },
   { path: 'edit-subcategory/:id', component: AgregarSubcategoriaComponent, canActivate: [AuthGuard] },

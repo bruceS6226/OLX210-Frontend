@@ -1,0 +1,108 @@
+<div style="display: flex; justify-content: flex-end; align-items: center; position: absolute; right: 0;">
+    <button mat-mini-fab color="primary" (click)="agregarUsuario()" matTooltip="Agregar un nuevo usuario"
+        matTooltipPosition="right">
+        <mat-icon>person_add</mat-icon>
+    </button>
+</div>
+
+<div class="container-fluid mt-3" style="width: 100%;">
+    <ul class="nav nav-tabs w-100" id="myTabs">
+        <li class="nav-item">
+            <a class="nav-link active" id="datosGenerales-tab" data-toggle="tab" href="#datosGenerales">Datos
+                generales</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="comportamiento-tab" data-toggle="tab" href="#comportamiento">Comportamiento</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="datosGenerales">
+            <div class="title">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombre y apellido</th>
+                            <th scope="col">Nombre de la cuenta</th>
+                            <th scope="col">Correo electrónico</th>
+                            <th scope="col">Celular</th>
+                            <th scope="col">Género</th>
+                            <th scope="col">Fecha de nacimiento</th>
+                            <th scope="col">Ubicación</th>
+                            <th scope="col">Tipo de documento</th>
+                            <th scope="col">Número de documento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let u of usuarios">
+                            <td>
+                                <button style="margin: -10px;" mat-icon-button color="primary"
+                                    [routerLink]="['/update-perfil', u.id_usuario]">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>
+                                <button style="margin: -10px;" (click)="abrirDialogEliminar(u.id_usuario, u.nombre, u.apellido)" mat-icon-button
+                                    color="warn">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{ u.id_usuario }}</td>
+                            <td>{{ u.nombre }} {{ u.apellido }}</td>
+                            <td>{{ u.nombre_cuenta}}</td>
+                            <td>{{ u.correo }}</td>
+                            <td>{{ u.telefono }} </td>
+                            <td>{{ u.genero }}</td>
+                            <td>{{ u.fecha_nacimiento }}</td>
+                            <td>{{ u.ubicacion }}</td>
+                            <td>{{ tiposDocumento[u.id_tipo_documento-1].nombre_tipo_documento}}</td>
+                            <td>{{ u.numero_documento }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2 *ngIf="usuarios.length == 0">No existen usuarios registrados</h2>
+            </div>
+        </div>
+        <div class="tab-pane fade show" id="comportamiento">
+            <div class="title">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Bloqueado</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Tipo de usuario</th>
+                            <th scope="col">Clase de usuario</th>
+                            <th scope="col">Publicaciones</th>
+                            <th scope="col">Inicios de sesión</th>
+                            <th scope="col">Compras</th>
+                            <th scope="col">Ventas</th>
+                            <th scope="col">Bloqueos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let u of usuarios">
+                            <td>
+                                <mat-slide-toggle color="warn" [checked]="u.bloqueado"
+                                    (change)="bloqueoOdesbloqueo(u.id_usuario)">
+                                </mat-slide-toggle>
+                            </td>
+                            <td>{{ u.id_usuario }}</td>
+                            <td>{{ u.nombre }} {{ u.apellido }}</td>
+                            <td>{{ tiposUsuario[u.id_tipo_usuario-1].nombre_tipo_usuario}}</td>
+                            <td>{{ clasesUsuario[u.id_clase_usuario-1].nombre_clase_usuario}}</td>
+                            <td>{{ obtenerComportamiento(u.id_comportamiento)?.cantidad_publicaciones }}</td>
+                            <td>{{ obtenerComportamiento(u.id_comportamiento)?.cantidad_inicio_sesion }}</td>
+                            <td>{{ obtenerComportamiento(u.id_comportamiento)?.cantidad_compras }}</td>
+                            <td>{{ obtenerComportamiento(u.id_comportamiento)?.cantidad_ventas }}</td>
+                            <td>{{ obtenerComportamiento(u.id_comportamiento)?.cantidad_bloqueos }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h2 *ngIf="usuarios.length == 0">No existen usuarios registrados</h2>
+        </div>
+    </div>
+</div>

@@ -1,27 +1,48 @@
 <div class="wrapper" style="margin-top: 20px;">
     <img style="margin-bottom: 20px;" src="../../../assets/img/logoOLX.jpg" class="logoAcceso">
-    <div *ngIf="signinSeccion1" style="display: flex;justify-content: center; align-items: flex-end; flex-direction: row;">
-        <div class="mt-3 mt-3">
+    <div *ngIf="signinSeccion1"
+        style="display: flex;justify-content: center; align-items: flex-end; flex-direction: row;">
+        <div class="mt-2">
             <img *ngIf="!foto" class="fotoPerfil" src="../../../assets/img/perfilNull.png" alt="perfil">
             <img *ngIf="foto" class="fotoPerfil" [src]="foto" alt="perfil">
         </div>
         <div style="width: 50%; margin-left: 10px; text-align: center;">
-            <label for="foto" style="color: rgb(110, 110, 110);">Cambiar foto:</label>
+            <label for="foto" style="color: rgb(110, 110, 110);">Cambiar foto o logo (opcional)</label>
             <input style="max-width: 250px; font-size: 11px;" type="file" id="foto" name="foto" class="form-control"
                 accept="image/png, image/jpg, image/jpeg, image/gif" (change)="alSeleccionarArchivo($event)"><br>
         </div>
     </div>
-    <div class="signin mt-3 mt-md-0">
-        <form #usuarioForm="ngForm" (ngSubmit)="guardarUsuario(usuarioForm)">
-            
-            <div *ngIf="signinSeccion1" class="form-container">
+    <div class="signin mt-3">
+        <form #usuarioForm="ngForm" (ngSubmit)="guardarUsuario(usuarioForm)" class="container">
+            <div *ngIf="signinSeccion1">
+                <div class="form-floating mt-1">
+                    <input type="text" id="nombre_cuenta" name="nombre_cuenta" placeholder="Nombre de cuenta"
+                        pattern="[^\s]*" class="form-control" [(ngModel)]="usuario.nombre_cuenta" required
+                        #nombreCuentaInput="ngModel" (input)="comprobarNombreCuenta()">
+                    <label for="nombre_cuenta"
+                        [style.color]="(usuario.nombre_cuenta ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                        {{ usuario.nombre_cuenta ? 'Nombre de cuenta' : 'Ingrese su nombre de cuenta' }}
+                        <span class="text-danger">*</span>
+                    </label>
+                    <small id="mensajeErrorTexto" class="form-text text-danger"
+                        [style.display]="(nombreCuentaInput.invalid && nombreCuentaInput.touched) ? 'block' : 'none'">
+                        Ingresar datos sin espacios.
+                    </small>
+                    <small id="verificarNombreCuenta" class="form-text text-danger"
+                        [style.display]="(!nombreCuentaInput.invalid && existeNombreCuenta) ? 'block' : 'none'">
+                        Este nombre de cuenta ya existe.
+                    </small>
+                </div>
                 <div class="row mb-3 mt-3">
                     <div class="col">
                         <div class="form-floating">
-                            <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre" class="form-control"
-                                required [(ngModel)]="usuario.nombre" pattern="[a-zA-ZáéíóúüÁÉÍÓÚÜ]*" #nombreInput="ngModel">
-                            <label for="nombre" [style.color]="(usuario.nombre ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                                {{ usuario.nombre ? 'Nombre:' : 'Ingrese su nombre' }}
+                            <input type="text" id="nombre" name="nombre" placeholder="Nombre" class="form-control"
+                                required [(ngModel)]="usuario.nombre" pattern="[a-zA-ZáéíóúüÁÉÍÓÚÜ]*"
+                                #nombreInput="ngModel">
+                            <label for="nombre"
+                                [style.color]="(usuario.nombre ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ usuario.nombre ? 'Nombre' : 'Ingrese su nombre' }}
+                                <span class="text-danger">*</span>
                             </label>
                             <small id="mensajeErrorTexto" class="form-text text-danger"
                                 [style.display]="(nombreInput.invalid && nombreInput.touched) ? 'block' : 'none'">
@@ -31,157 +52,223 @@
                     </div>
                     <div class="col">
                         <div class="form-floating">
-                            <input type="text" id="apellido" name="apellido" placeholder="Ingrese su apellido"
-                                class="form-control" required [(ngModel)]="usuario.apellido" pattern="[a-zA-ZáéíóúüÁÉÍÓÚÜ]*"
-                                #apellidoInput="ngModel">
+                            <input type="text" id="apellido" name="apellido" placeholder="Apellido" class="form-control"
+                                [(ngModel)]="usuario.apellido" pattern="[a-zA-ZáéíóúüÁÉÍÓÚÜ]*" #apellidoInput="ngModel">
                             <label for="apellido"
                                 [style.color]="(usuario.apellido ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                                {{ usuario.apellido ? 'Apellido:' : 'Ingrese su apellido' }}
+                                {{ usuario.apellido ? 'Apellido' : 'Ingrese su apellido' }}
                             </label>
                             <small id="mensajeErrorTexto" class="form-text text-danger"
-                                [style.display]="(apellidoInput.invalid && apellidoInput.touched) ? 'block' : 'none'">
+                                [style.display]="(apellidoInput.invalid) ? 'block' : 'none'">
                                 Ingresar solo letras sin espacios.
                             </small>
                         </div>
                     </div>
                 </div>
-                <div class="form-floating mb-3 mt-3">
-                    <input type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico"
-                        class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}"
-                        [(ngModel)]="usuario.correo" #correoInput="ngModel">
-                    <label for="correo" style="margin-bottom: 40px !important;"
-                        [style.color]="(usuario.correo ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                        {{ usuario.correo ? 'Correo:' : 'Ingrese su correo' }}</label>
-                    <small id="mensajeErrorCorreo" class="form-text text-danger"
-                        [style.display]="(correoInput.invalid && correoInput.touched) ? 'block' : 'none'">
-                        Ingrese un correo válido (ejemplo@email.com).</small>
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" id="telefono" name="telefono" placeholder="Número de celular"
+                                class="form-control" required [(ngModel)]="usuario.telefono" pattern="^09\d{8}$"
+                                #celularInput="ngModel">
+                            <label for="telefono"
+                                [style.color]="(usuario.telefono? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ usuario.telefono ? 'Celular' : 'Ingrese su celular' }}
+                                <span class="text-danger">*</span></label>
+                        </div>
+                        <small id="mensajeErrorTexto" class="form-text text-danger"
+                            [style.display]="(celularInput.invalid && celularInput.touched)? 'block': 'none' ">
+                            Ingresar 10 dígitos desde 09.
+                        </small>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" id="confirmarCelular" name="confirmarCelular"
+                                placeholder="Número de celular" class="form-control" required
+                                [(ngModel)]="confirmarCelular" pattern="^09\d{8}$">
+                            <label for="confirmarCelular"
+                                [style.color]="(confirmarCelular? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ confirmarCelular ? 'Confirmar celular' : 'Confirme su celular:' }}
+                                <span class="text-danger">*</span></label>
+                            <small id="mensajeErrorContrasenia" class="form-text text-danger"
+                                *ngIf="usuario.telefono !== confirmarCelular">Los celulares no coinciden.</small>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-floating mb-3 mt-3">
-                    <input type="number" id="telefono" name="telefono" placeholder="Ingrese su número de teléfono"
-                        class="form-control" required [(ngModel)]="usuario.telefono">
-                    <label for="telefono"
-                        [style.color]="(usuario.telefono? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                        {{ usuario.telefono ? 'Teléfono:' : 'Ingrese su número de telefono' }}</label>
-                </div>
-                <div style="height: 50px; display: flex; justify-content: space-between; margin-top: 20px; align-content: center; align-items: center; flex-direction: row;">
-                    <a (click) = "regresarAcceso()" style="text-decoration: none; display: flex; align-items: center;">
-                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;"><</span>
-                                <span style="color: black; font-size: 16px;">Atrás</span>
-                    </a>
-                    <a (click)="mostrarSeccion2()"
-                        style="cursor: pointer; text-decoration: none; display: flex; align-items: center;">
-                        <span style="font-size: 16px;">Siguiente</span>
-                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;">></span>
-                    </a>
+                <div class="iconsAtrasSiguiente">
+                    <button mat-mini-fab color="primary" (click)="regresarAcceso()" matTooltip="Atrás">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="mostrarSeccion2(usuarioForm)" matTooltip="Siguiente">
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
                 </div>
             </div>
-
-            <div *ngIf="signinSeccion2" style="margin-top: 10px;">
+            <div *ngIf="signinSeccion2" style="margin-top: 40px;">
+                <div class="row mb-3 mt-2">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="email" id="correo" name="correo" placeholder="Correo electrónico"
+                                class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}"
+                                [(ngModel)]="usuario.correo" #correoInput="ngModel" (input)="comprobarCorreo()">
+                            <label for="correo" style="margin-bottom: 40px !important;"
+                                [style.color]="(usuario.correo ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ usuario.correo ? 'Correo' : 'Ingrese su correo' }}
+                                <span class="text-danger">*</span></label>
+                            <small id="mensajeErrorCelular" class="form-text text-danger"
+                                [style.display]="(correoInput.invalid && correoInput.touched) ? 'block' : 'none'">
+                                Ingrese un correo válido (ejemplo@email.com).</small>
+                            <small id="verificarCorreo" class="form-text text-danger"
+                                [style.display]="(!correoInput.invalid && existeCorreo) ? 'block' : 'none'">
+                                El correo electrónico ya está registrado.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="email" id="confirmarCorreo" name="confirmarCorreo" #correoInput="ngModel"
+                                placeholder="Confirmar correo electrónico" class="form-control" required
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}" [(ngModel)]="confirmarCorreo">
+                            <label for="confirmarCorreo" style="margin-bottom: 40px !important;"
+                                [style.color]="(confirmarCorreo ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ confirmarCorreo ? 'Confirmar correo' : 'Confirme su correo' }}
+                                <span class="text-danger">*</span></label>
+                            <small id="mensajeErrorCorreo" class="form-text text-danger"
+                                *ngIf="usuario.correo !== confirmarCorreo">Los correos no coinciden.</small>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-floating mb-3 mt-3">
-                    <select [style.color]="(usuario.id_tipo_usuario !== 0? 'black' : 'rgb(150, 150, 150)')" class="form-select"
-                    name="id_tipo_usuario" [(ngModel)]="usuario.id_tipo_usuario" required>
-                        <option value="0" selected>Seleccionar</option>
+                    <select [style.color]="(usuario.id_tipo_usuario !== 0? 'black' : 'rgb(150, 150, 150)')"
+                        class="form-select" name="id_tipo_usuario" [(ngModel)]="usuario.id_tipo_usuario"
+                        (change)="restringirTipoDocumento()" required>
+                        <option value="0" selected disabled>Seleccionar</option>
                         <option style="color: black" *ngFor="let tipoUsuario of tiposUsuario"
-                        [value]="tipoUsuario.id_tipo_usuario">{{ tipoUsuario.nombre_tipo_usuario }}</option>
+                            [value]="tipoUsuario.id_tipo_usuario">{{ tipoUsuario.nombre_tipo_usuario }}</option>
                     </select>
-                    <label for="id_tipo_usuario" style="color: rgb(110, 110, 110)">Tipo de usuario:</label>
+                    <label for="id_tipo_usuario" style="color: rgb(110, 110, 110)">Tipo de usuario
+                        <span class="text-danger">*</span></label>
                 </div>
-                <div class="form-floating mb-3 mt-3">
-                    <select [style.color]="(usuario.id_tipo_documento? 'black' : 'rgb(150, 150, 150)')" class="form-select"
-                    name="id_tipo_documento" [(ngModel)]="usuario.id_tipo_documento" required>
-                        <option value="0" selected>Seleccionar el tipo de documento</option>
-                        <option style="color: black" *ngFor="let tipoDocumento of tiposDocumento"
-                        [value]="tipoDocumento.id_tipo_documento">{{ tipoDocumento.nombre_tipo_documento }}</option>
-                    </select>
-                    <label for="id_tipo_documento" style="color: rgb(110, 110, 110)">Tipo de documento:</label>
+                <div class="row mt-3 mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <select [style.color]="(usuario.id_tipo_documento? 'black' : 'rgb(150, 150, 150)')"
+                                class="form-select" name="id_tipo_documento" [(ngModel)]="usuario.id_tipo_documento"
+                                required>
+                                <option value="0" selected disabled>Seleccionar</option>
+                                <option style="color: black" *ngFor="let tipoDocumento of tiposDocumento"
+                                    [value]="tipoDocumento?.id_tipo_documento">{{ tipoDocumento?.nombre_tipo_documento }}
+                                </option>
+                            </select>
+                            <label for="id_tipo_documento" style="color: rgb(110, 110, 110)">Tipo de documento
+                                <span class="text-danger">*</span></label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" id="numero_documento" name="numero_documento"
+                                placeholder="Número de documento" class="form-control" required
+                                [(ngModel)]="usuario.numero_documento" #numeroDocumentoInput="ngModel"
+                                (input)="comprobarNumeroDocumento()" pattern="^\d{10}$">
+                            <label for="numero_documento"
+                                [style.color]="(usuario.numero_documento? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
+                                {{ usuario.numero_documento ? 'Número de documento' : 'Ingrese su documento' }}
+                                <span class="text-danger">*</span></label>
+                            <small id="mensajeErrorTexto" class="form-text text-danger"
+                                [style.display]="(numeroDocumentoInput.invalid && numeroDocumentoInput.touched)? 'block': 'none' ">
+                                Ingresar 10 dígitos.
+                            </small>
+                            <small id="verificarNumeroDocumento" class="form-text text-danger"
+                                [style.display]="(!numeroDocumentoInput.invalid && existeNumeroDocumento) ? 'block' : 'none' ">
+                                El documento ya está registrado.
+                            </small>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-floating mb-3 mt-3">
-                    <input type="number" id="numero_documento" name="numero_documento" placeholder="Ingrese su número de documento"
-                        class="form-control" required [(ngModel)]="usuario.numero_documento">
-                    <label for="numero_documento"
-                        [style.color]="(usuario.numero_documento? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                        {{ usuario.numero_documento ? 'Número de documento:' : 'Ingrese su número documento' }}</label>
+                <div class="row mt-3 mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <select [style.color]="(usuario.id_clase_usuario? 'black' : 'rgb(150, 150, 150)')"
+                                class="form-select" name="id_clase_usuario" [(ngModel)]="usuario.id_clase_usuario"
+                                required>
+                                <option value="0" selected disabled>Seleccionar</option>
+                                <option style="color: black" *ngFor="let claseUsuario of clasesUsuario"
+                                    [value]="claseUsuario.id_clase_usuario">{{ claseUsuario.nombre_clase_usuario }}
+                                </option>
+                            </select>
+                            <label for="id_clase_usuario" style="color: rgb(110, 110, 110)">Clase de usuario
+                                <span class="text-danger">*</span></label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <select [style.color]="(usuario.genero? 'black' : 'rgb(150, 150, 150)')" class="form-select"
+                                name="genero" [(ngModel)]="usuario.genero" required>
+                                <option value="" selected disabled>Seleccionar</option>
+                                <option value="Hombre" style="color: black">Hombre</option>
+                                <option value="Mujer" style="color: black">Mujer</option>
+                                <option value="Otro" style="color: black">Otro</option>
+                            </select>
+                            <label for="genero" style="color: rgb(110, 110, 110)">Género
+                                <span class="text-danger">*</span></label>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-floating mb-3 mt-3">
-                    <select [style.color]="(usuario.id_clase_usuario? 'black' : 'rgb(150, 150, 150)')" class="form-select"
-                    name="id_clase_usuario" [(ngModel)]="usuario.id_clase_usuario" required>
-                        <option value="0" selected>Seleccionar</option>
-                        <option style="color: black" *ngFor="let claseUsuario of clasesUsuario"
-                        [value]="claseUsuario.id_clase_usuario">{{ claseUsuario.nombre_clase_usuario }}</option>
-                    </select>
-                    <label style="color: rgb(110, 110, 110)">Clase de usuario:</label>
-                </div>
-                <div class="form-floating mb-3 mt-3">
-                    <select [style.color]="(usuario.genero? 'black' : 'rgb(150, 150, 150)')" class="form-select"
-                        name="genero" [(ngModel)]="usuario.genero" required>
-                        <option value="" selected>Seleccionar</option>
-                        <option value="hombre" style="color: black">Hombre</option>
-                        <option value="mujer" style="color: black">Mujer</option>
-                        <option value="otro" style="color: black">Otro</option>
-                    </select>
-                    <label for="genero" style="color: rgb(110, 110, 110)">Género:</label>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: -10px; align-content: center; align-items: center; flex-direction: row;">
-                    <a (click)="mostrarSeccion1()"style="text-decoration: none; display: flex; align-items: center;">
-                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;"><</span>
-                                <span style="color: black; font-size: 16px;">Atrás</span>
-                    </a>
-                    <a (click)="mostrarSeccion3();obtenerUbicacion()"
-                        style="cursor: pointer; text-decoration: none; display: flex; align-items: center;">
-                        <span style="font-size: 16px;">Siguiente</span>
-                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;">></span>
-                    </a>
+                <div class="iconsAtrasSiguiente">
+                    <button mat-mini-fab color="primary" (click)="mostrarSeccion1()" matTooltip="Atrás">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="mostrarSeccion3(usuarioForm)" matTooltip="Siguiente">
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
                 </div>
             </div>
-
-
             <div *ngIf="signinSeccion3">
                 <div class="mt-3">
-                    <label for="ubicacionActual" style="color: rgb(110, 110, 110);">Ubicación:</label>
+                    <label for="ubicacionActual" style="color: rgb(110, 110, 110);">Escoga su ubicación actual</label>
                 </div>
-                <div style="display: flex; flex-direction: column; height: 100%; margin-top: -10px;">
-                    <div class="d-grid gap-2 mb-3" style="flex: 1; display: flex; flex-direction: column; position: relative;">
-                      <button type="button" class="btn btn-primary"
-                        style="background-color: rgb(255, 243, 68); color: rgb(39, 28, 28); position: absolute; top: 15px; right: 0px; z-index: 10;"
-                        id="ubicacionActual" (click)="obtenerUbicacion()">Ingresar ubicación actual</button>
+                <div style="display: flex; flex-direction: column; height: 95%; margin-top: -15px;">
+                    <div class="d-grid gap-2 mb-3"
+                        style="flex: 1; display: flex; flex-direction: column; position: relative;">
+                        <button type="button" mat-raised-button color="warn" matTooltipPosition="right"
+                            style="position: absolute; top: 20px; right: 5px; z-index: 10;" id="ubicacionActual"
+                            (click)="obtenerUbicacionActual()" matTooltip="Buscar mi ubicación">
+                            <mat-icon>location_on</mat-icon>Ubicación actual</button>
                     </div>
                     <div id="map" class="w-100" style="display: grid; place-items: center; height: 330px; border: 0.5px grove rgb(110, 110, 110);
                     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); z-index: 0;">
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-between;  align-content: center; align-items: center; flex-direction: row;">
-                    <a (click)="mostrarSeccion2()"
-                        style="cursor: pointer; text-decoration: none; display: flex; align-items: center;">
-                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;"><</span>
-                                <span style="color: black; font-size: 16px;">Atrás</span>
-                    </a>
-                    <a (click)="mostrarSeccion4()"
-                        style="cursor: pointer; text-decoration: none; display: flex; align-items: center;">
-                        <span style="font-size: 16px;">Siguiente</span>
-                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;">></span>
-                    </a>
+                <div class="iconsAtrasSiguiente">
+                    <button mat-mini-fab color="primary" (click)="mostrarSeccion2()" matTooltip="Atrás">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="mostrarSeccion4(usuarioForm)" matTooltip="Siguiente">
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
                 </div>
             </div>
-
             <div *ngIf="signinSeccion4">
                 <div class="form-floating mb-3 mt-3">
                     <input type="{{ mostrarContrasenia ? 'text' : 'password' }}" name="contrasenia" id="contrasenia"
-                        placeholder="Ingrese su contraseña" class="form-control" required [(ngModel)]="contrasenia"
+                        placeholder="Contraseña" class="form-control" required [(ngModel)]="contrasenia"
                         pattern="^(?=.*[a-zA-Z])(?=.*\d).{8,}$" #contraseniaInput="ngModel">
                     <label for="contrasenia"
                         [style.color]="(contrasenia ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                        {{ contrasenia ? 'Contraseña:' : 'Ingrese su contraseña' }}</label>
+                        {{ contrasenia ? 'Contraseña' : 'Ingrese su contraseña' }}
+                        <span class="text-danger">*</span></label>
                     <small id="mensajeErrorTexto" class="form-text text-danger"
                         [style.display]="(contraseniaInput.invalid && contraseniaInput.touched) ? 'block' : 'none'">
                         Ingresar al menos 8 caracteres, que incluya letras y números.</small>
                 </div>
                 <div class="form-floating mb-3 mt-3">
                     <input type="{{ mostrarContrasenia ? 'text' : 'password' }}" name="confirmarContrasenia"
-                        id="confirmarContrasenia" placeholder="Confirme su contraseña" class="form-control" required
+                        id="confirmarContrasenia" placeholder="Confirmar contraseña" class="form-control" required
                         [(ngModel)]="confirmarContrasenia">
                     <label for="confirmarContrasenia"
                         [style.color]="(confirmarContrasenia? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
-                        {{ confirmarContrasenia ? 'Confirmar contraseña:' : 'Confirme su contraseña' }}</label>
+                        {{ confirmarContrasenia ? 'Confirmar contraseña' : 'Confirme su contraseña' }}
+                        <span class="text-danger">*</span></label>
                     <small id="mensajeErrorContrasenia" class="form-text text-danger"
                         *ngIf="contrasenia !== confirmarContrasenia">Las contraseñas no coinciden.</small>
                 </div>
@@ -191,42 +278,32 @@
                     <label class="form-check-label" for="mostrarContrasenia" style="color: rgb(110, 110, 110);">
                         Mostrar contraseña</label>
                 </div>
-                <div class="mb-3 mt-3">
-                    <label for="fecha_nacimiento" style="color: rgb(110, 110, 110);">Fecha de nacimiento:</label>
-                    <input [style.color]="(usuario.fecha_nacimiento? 'black' : 'rgb(150, 150, 150)')" type="date"
-                        id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" required
-                        [(ngModel)]="usuario.fecha_nacimiento" [max]="fechaMinima">
-                </div>
-                <div class="form-check mb-3 mt-3">
+                <label for="fecha_nacimiento" style="color: rgb(110, 110, 110);">Fecha de nacimiento
+                    <span class="text-danger">*</span></label>
+                <input [style.color]="(usuario.fecha_nacimiento? 'black' : 'rgb(150, 150, 150)')" type="date"
+                    id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" required
+                    [(ngModel)]="usuario.fecha_nacimiento" [max]="fechaMinima" placeholder="Fecha de nacimiento">
+
+                <div class="form-check mb-4 mt-3">
                     <input type="checkbox" class="form-check-input" id="aceptoTerminos"
-                        (click)="cambiarVerificacionTerminos()" [(ngModel)]="aceptoTerminos" name="aceptoTerminos" >
+                        (click)="cambiarVerificacionTerminos()" [(ngModel)]="aceptoTerminos" name="aceptoTerminos">
                     <label class="form-check-label" for="aceptoTerminos" style="color: rgb(110, 110, 110);">Aceptar
                         <a href="../../../assets/pdf/terminos.pdf" download="Terminos.pdf"
                             style="color: inherit;">términos y condiciones</a>
                     </label>
                 </div>
-                    <div class="d-grid gap-2 mb-3">
-                        <button *ngIf="!loadingCrear" class="btn btn-primary" 
-                            [disabled]="
-                                (!usuario.nombre || !usuario.apellido || !usuario.correo || !usuario.telefono ||
-                                !usuario.id_tipo_usuario || !usuario.id_tipo_documento || !usuario.numero_documento ||
-                                !usuario.id_clase_usuario || !usuario.genero || !contrasenia ||
-                                !confirmarContrasenia || contrasenia !== confirmarContrasenia || !aceptoTerminos)"
-                            [ngStyle]="{'cursor': usuarioForm.form.valid ? 'pointer' : 'not-allowed'}">
-                            {{tituloBoton}}
-                        </button>
-                        <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
+                <div class="d-grid gap-2 mb-3">
+                    <button *ngIf="!loadingCrear" type="submit" mat-raised-button color="primary">
+                        <mat-icon>person_add</mat-icon>CREAR CUENTA</button>
+                    <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
                                 justify-content: center; text-align: center;">
-                            <app-spinner></app-spinner>
-                        </div>
+                        <app-spinner></app-spinner>
+                    </div>
                 </div>
-                <div
-                    style="display: flex; justify-content: space-between; margin-top: -10px; align-content: center; align-items: center; flex-direction: row;">
-                    <a (click)="mostrarSeccion3();obtenerUbicacion()"
-                        style="cursor: pointer; text-decoration: none; display: flex; align-items: center;">
-                        <span style="color: blue; display: block; font-size: 50px; padding-bottom: 10px;"><</span>
-                                <span style="color: black; font-size: 16px;">Atrás</span>
-                    </a>
+                <div class="iconsAtrasSiguiente">
+                    <button mat-mini-fab color="primary" (click)="mostrarSeccion3()" matTooltip="Atrás">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
                 </div>
             </div>
         </form>

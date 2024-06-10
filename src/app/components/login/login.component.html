@@ -9,22 +9,31 @@
             <div class="form-floating mb-3 mt-3">
                 <input type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico"
                     class="form-control" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                    [(ngModel)]="usuario.correo" #correoInput="ngModel">
+                    [(ngModel)]="usuario.correo" #correoInput="ngModel" (input)="comprobarCorreo()">
                 <label for="correo" [style.color]="(usuario.correo ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
                     {{ usuario.correo ? 'Correo:' : 'Ingrese su correo' }}</label>
                 <small id="mensajeErrorCorreo" class="form-text text-danger"
                     [style.display]="(correoInput.invalid && correoInput.touched) ? 'block' : 'none'">
                     Ingrese un correo válido (ejemplo@email.com).</small>
+                <small id="verificarCorreo" class="form-text text-danger"
+                    [style.display]="(!correoInput.invalid && !existeCorreo) ? 'block' : 'none'">
+                    El correo electrónico no esta registrado.
+                </small>
             </div>
             <div class="form-floating mb-3 mt-3">
                 <input type="{{ mostrarContrasenia ? 'text' : 'password' }}" name="contrasenia" id="contrasenia"
                     placeholder="Ingrese su contraseña" class="form-control" required [(ngModel)]="contrasenia"
-                    pattern="^(?=.*[a-zA-Z])(?=.*\d).{8,}$" #contraseniaInput="ngModel">
+                    pattern="^(?=.*[a-zA-Z])(?=.*\d).{8,}$" #contraseniaInput="ngModel"
+                    (input)="comprobarContrasenia()">
                 <label for="contrasenia" [style.color]="(contrasenia ? 'rgb(110, 110, 110)' : 'rgb(150, 150, 150)')">
                     {{ contrasenia ? 'Contraseña:' : 'Ingrese su contraseña' }}</label>
                 <small id="mensajeErrorTexto" class="form-text text-danger"
                     [style.display]="(contraseniaInput.invalid && contraseniaInput.touched) ? 'block' : 'none'">
                     Ingresar al menos 8 caracteres, que incluya letras y números.</small>
+                <small id="verificarContrasenia" class="form-text text-danger"
+                    [style.display]="(!contraseniaInput.invalid && !existeContrasenia) ? 'block' : 'none'">
+                    La contraña es incorrecta.
+                </small>
             </div>
             <div class="form-check mb-3 mt-3">
                 <input type="checkbox" class="form-check-input" id="mostrarContrasenia"
@@ -33,23 +42,18 @@
                     Mostrar contraseña</label>
             </div>
             <div class="d-grid gap-2 mb-3">
-                <button *ngIf="!loadingCrear" class="btn btn-primary" id="botonCrearCuenta"
-                    [disabled]="!usuarioForm.form.valid"
-                    [ngStyle]="{'cursor': usuarioForm.form.valid ? 'pointer' : 'not-allowed'}">
-                    INGRESAR</button>
+                <button *ngIf="!loadingCrear" mat-raised-button color="primary" id="botonCrearCuenta">
+                    <mat-icon>login</mat-icon>INGRESAR</button>
                 <div class="spinner-container" *ngIf="loadingCrear" style="display: flex; flex-direction: column; align-items: center;
                     justify-content: center; text-align: center;"><app-spinner></app-spinner>
                 </div>
             </div>
             <div class="d-grid gap-2 mb-3" style="text-align: center;">
-                <p class="mt-1">No tienes cuenta? <a routerLink="/signin">Registrarse</a></p>
+                <p class="mt-1">No tienes cuenta? <a (click)="registrar()" routerLink="">Registrarse</a></p>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-top: -30px; align-content: center; align-items: center; flex-direction: row;">
-                <a (click) = "regresarAcceso()" style="text-decoration: none; display: flex; align-items: center;">
-                    <span style="display: block; font-size: 50px; padding-bottom: 10px;"><</span>
-                    <span style="color: black; font-size: 16px;">Atrás</span>
-                </a>
-            </div>
+            <button mat-mini-fab color="primary" (click)="regresarAcceso()" matTooltip="Atrás">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
         </form>
     </div>
 </div>
